@@ -1,22 +1,35 @@
 import pandas as pd
 import book_to_words
 
+# 修改书名
+file_book = 'hp1'
+file_dict = 'cet4'
+# 获取全书所有单词列表存为csv文件
+book_to_words.save_words_as_csv('book/' + file_book + '.txt')
 
-book = 'book\hp1.txt'
-# 获取全书所有单词列表
-words_list = book_to_words.get_words_list(book)
+# 读取整理好的words 和 dict
+file_words = 'output/words.csv'
+words = pd.read_csv(file_words, index_col=0)
+words[file_dict] = False
+dict = pd.read_csv('dictionary/'+ file_dict + '.csv') 
 
-#频率由高到低排列
-words_sort_by_freq = pd.value_counts(words_list)
-dict_word = {'word':words_sort_by_freq.index, 'count':words_sort_by_freq.values}
-words = pd.DataFrame(dict_word)
+# 判断是否为dict单词
+words_len = len(words)
+for i in range(0, len(dict)):
+    try: 
+        words.loc[dict['word'][i], file_dict] = True
+    except:
+        break
+    else:
+        len = len
+words = words.head(words_len)
 
-#清除有标点符号行
-words = words[~words['word'].str.contains('~|`|!|@|#|\$|%|\^|&|\*|\(|\)|-|_|\+|=|{|\[|}|]|:|;|"|\'|<|,|>|\.|/|\?')]
-words.reset_index(drop=True,inplace=True)
-# 添加列
-words.loc[:, 'cet4'] = False
-words.loc[:, 'cet6'] = False
-words.loc[:, 'kaoyan'] = False
+# 判断 书中dict单词 占 全部dict单词的百分比
+number_of_words_in_dict = len(words.loc[words[file_dict] == True])
+number_of_dict = len(dict)
+output = file_book + "中的" + file_dict + "单词 占 所有" + file_dict + "单词 的" + str(round((number_of_words_in_dict/number_of_dict*100), 2)) + '%'
+print(output)
 
-print(words.tail())
+words.to_csv('output/words_result.csv')
+# words.loc[words[file_dict] == True, ['word', 'count']].to_csv('output\word_in_dict.csv')
+# words.loc[words[file_dict] == False, ['word', 'count']].to_csv('output\word_without_in_dict.csv')

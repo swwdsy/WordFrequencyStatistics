@@ -1,6 +1,9 @@
 from nltk.stem import WordNetLemmatizer
 from nltk.tag import pos_tag
 from nltk.tokenize import word_tokenize
+import pandas as pd
+
+
 
 # 对字符串进行分词,识别词性，根据词性还原词根
 def lemmatize_all(text):
@@ -28,3 +31,20 @@ def get_words_list(book):
     for word in lemmatize_all(string_book):
         words_list.append(word)
     return words_list
+
+def save_words_as_csv(book):
+    words_list = get_words_list(book)
+
+    #频率由高到低排列
+    words_sort_by_freq = pd.value_counts(words_list)
+    dict_word = {'word':words_sort_by_freq.index, 'count':words_sort_by_freq.values}
+    words = pd.DataFrame(dict_word)
+
+    #清除有标点符号行,字母小于二的行
+    words = words[~words['word'].str.contains('~|\|`|!|@|#|\$|%|\^|&|\*|\(|\)|-|_|\+|=|{|\[|}|]|:|;|"|\'|<|,|>|\.|/|\?')]
+    words = words[~(words['word'].str.len()<3)]
+    words.reset_index(drop=True,inplace=True)
+    
+
+    words.to_csv('output/words.csv', index=False)
+    print('Save as output/words.csv')
