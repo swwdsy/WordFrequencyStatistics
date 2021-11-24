@@ -2,8 +2,8 @@ import pandas as pd
 import book_to_words
 
 # 修改书名
-file_book = 'hp1'
-file_dict = 'cet4'
+file_book = 'hp1ch1'
+file_dict = 'ky'
 # 获取全书所有单词列表存为csv文件
 book_to_words.save_words_as_csv('book/' + file_book + '.txt')
 
