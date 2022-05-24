@@ -3,7 +3,7 @@ import pandas as pd
 import book_to_words
 
 # 书名(统计目标)
-file_name = '2001真题阅读.txt'
+file_name = '真题阅读.txt'
 
 # 字典
 dict_name = 'postgratuate.csv'
